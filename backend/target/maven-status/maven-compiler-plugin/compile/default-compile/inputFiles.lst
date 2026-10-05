@@ -1,0 +1,13 @@
+H:\FRAUD-DETECTION-PROJECT\backend\src\main\java\com\frauddetection\backend\BackendApplication.java
+H:\FRAUD-DETECTION-PROJECT\backend\src\main\java\com\frauddetection\backend\config\AppConfig.java
+H:\FRAUD-DETECTION-PROJECT\backend\src\main\java\com\frauddetection\backend\config\SecurityConfig.java
+H:\FRAUD-DETECTION-PROJECT\backend\src\main\java\com\frauddetection\backend\controller\TransactionController.java
+H:\FRAUD-DETECTION-PROJECT\backend\src\main\java\com\frauddetection\backend\model\FraudAlert.java
+H:\FRAUD-DETECTION-PROJECT\backend\src\main\java\com\frauddetection\backend\model\Transaction.java
+H:\FRAUD-DETECTION-PROJECT\backend\src\main\java\com\frauddetection\backend\model\TransactionRequest.java
+H:\FRAUD-DETECTION-PROJECT\backend\src\main\java\com\frauddetection\backend\model\User.java
+H:\FRAUD-DETECTION-PROJECT\backend\src\main\java\com\frauddetection\backend\repository\FraudAlertRepository.java
+H:\FRAUD-DETECTION-PROJECT\backend\src\main\java\com\frauddetection\backend\repository\TransactionRepository.java
+H:\FRAUD-DETECTION-PROJECT\backend\src\main\java\com\frauddetection\backend\repository\UserRepository.java
+H:\FRAUD-DETECTION-PROJECT\backend\src\main\java\com\frauddetection\backend\service\MLClientService.java
+H:\FRAUD-DETECTION-PROJECT\backend\src\main\java\com\frauddetection\backend\service\TransactionService.java
