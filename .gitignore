@@ -1,0 +1,19 @@
+# Node
+node_modules/
+frontend/build/
+
+# Java
+backend/target/
+*.class
+
+# Python
+__pycache__/
+*.pyc
+ml-service/creditcard.csv
+
+# IDE
+.idea/
+.vscode/
+
+# Env
+.envm
