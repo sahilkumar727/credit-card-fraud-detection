@@ -6,7 +6,7 @@ Dataset link:- https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud/data?sele
 
 # 🛡️️ Credit Card Fraud Detection System
 
-An end-to-end Machine Learning project designed to detect fraudulent credit card transactions in real-time.
+An end-to-end Machine Learning project designed to detect fraudulent credit card transactions in real-time.  
 
 ---
 
