@@ -19,12 +19,23 @@ public class TransactionService {
     private MLClientService mlClientService;
 
     public Transaction processTransaction(Transaction transaction, Map<String, Object> features) {
-        Map<String, Object> result = mlClientService.getFraudPrediction(features);
+        Double fraudProb = 0.05;
+        Boolean isFraud = false;
 
-        Double fraudProb = (result != null && result.get("fraud_probability") != null)
-                ? ((Number) result.get("fraud_probability")).doubleValue()
-                : 0.0;
-        Boolean isFraud = (result != null && Boolean.TRUE.equals(result.get("is_fraud")));
+        try {
+            Map<String, Object> result = mlClientService.getFraudPrediction(features);
+            if (result != null && result.get("fraud_probability") != null) {
+                fraudProb = ((Number) result.get("fraud_probability")).doubleValue();
+                isFraud = (result.get("is_fraud") != null && Boolean.TRUE.equals(result.get("is_fraud")));
+            }
+        } catch (Exception e) {
+            System.err.println("ML Service call error (using fallback): " + e.getMessage());
+            // Fallback heuristics if ML service is cold-starting or connecting
+            if (transaction.getAmount() != null && transaction.getAmount().doubleValue() > 50000) {
+                fraudProb = 0.85;
+                isFraud = true;
+            }
+        }
 
         transaction.setFraudScore(fraudProb);
         transaction.setStatus(isFraud ? "Flagged" : "Approved");
