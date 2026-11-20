@@ -5,7 +5,7 @@ import {
 } from "recharts";
 import "./App.css";
 
-const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:8081";
+const API_BASE = process.env.REACT_APP_API_BASE || "https://backend-production-5d2e73da.up.railway.app";
 
 const BANKS = ["HDFC Bank", "ICICI Bank", "State Bank of India", "Axis Bank", "Kotak Mahindra Bank", "Punjab National Bank"];
 const TXN_TYPES = ["UPI", "Debit Card", "Credit Card", "Net Banking", "IMPS", "NEFT", "Wire Request", "ATM Withdrawal"];
