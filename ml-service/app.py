@@ -1,17 +1,29 @@
+import os
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import joblib
 import pandas as pd
 
 app = FastAPI(title="Fraud Detection ML Service")
 
-# Load saved model and scaler
-model = joblib.load("fraud_model.pkl")
-scaler_amount = joblib.load("scaler_amount.pkl")
-scaler_time = joblib.load("scaler_time.pkl")
+# Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Define input schema (same columns as your training data, minus 'Class')
+# Load saved model and scalers with reliable path resolution
+model = joblib.load(os.path.join(BASE_DIR, "fraud_model.pkl"))
+scaler_amount = joblib.load(os.path.join(BASE_DIR, "scaler_amount.pkl"))
+scaler_time = joblib.load(os.path.join(BASE_DIR, "scaler_time.pkl"))
+
+# Define input schema
 class Transaction(BaseModel):
     Time: float
     V1: float
@@ -46,11 +58,12 @@ class Transaction(BaseModel):
 
 @app.get("/")
 def home():
-    return {"message": "Fraud Detection ML Service is running"}
+    return {"status": "ok", "message": "Fraud Detection ML Service is running"}
 
 @app.post("/predict")
 def predict(transaction: Transaction):
-    data = pd.DataFrame([transaction.dict()])
+    data_dict = transaction.model_dump() if hasattr(transaction, "model_dump") else transaction.dict()
+    data = pd.DataFrame([data_dict])
 
     # Scale Amount and Time same way as training
     data["Amount"] = scaler_amount.transform(data[["Amount"]])
@@ -64,3 +77,8 @@ def predict(transaction: Transaction):
         "is_fraud": bool(is_fraud),
         "risk_label": "High Risk" if fraud_prob > 0.7 else ("Medium Risk" if fraud_prob > 0.3 else "Low Risk")
     }
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("app:app", host="0.0.0.0", port=port, reload=False)

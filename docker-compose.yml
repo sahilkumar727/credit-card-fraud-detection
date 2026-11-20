@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: fraud-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: frauddb
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  ml-service:
+    build:
+      context: ./ml-service
+      dockerfile: Dockerfile
+    container_name: fraud-ml-service
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fraud-backend
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/frauddb?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - ML_SERVICE_URL=http://ml-service:8000/predict
+      - PORT=8081
+    depends_on:
+      db:
+        condition: service_healthy
+      ml-service:
+        condition: service_started
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: fraud-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:

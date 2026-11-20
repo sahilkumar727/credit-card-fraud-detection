@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://local:3000")
+@CrossOrigin(origins = "*")
 @RestController
 public class TransactionController {
 

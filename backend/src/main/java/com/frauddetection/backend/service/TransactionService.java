@@ -21,8 +21,10 @@ public class TransactionService {
     public Transaction processTransaction(Transaction transaction, Map<String, Object> features) {
         Map<String, Object> result = mlClientService.getFraudPrediction(features);
 
-        Double fraudProb = (Double) result.get("fraud_probability");
-        Boolean isFraud = (Boolean) result.get("is_fraud");
+        Double fraudProb = (result != null && result.get("fraud_probability") != null)
+                ? ((Number) result.get("fraud_probability")).doubleValue()
+                : 0.0;
+        Boolean isFraud = (result != null && Boolean.TRUE.equals(result.get("is_fraud")));
 
         transaction.setFraudScore(fraudProb);
         transaction.setStatus(isFraud ? "Flagged" : "Approved");

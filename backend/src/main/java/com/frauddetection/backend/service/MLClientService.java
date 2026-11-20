@@ -1,6 +1,7 @@
 package com.frauddetection.backend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,9 +13,10 @@ public class MLClientService {
     @Autowired
     private RestTemplate restTemplate;
 
-    private static final String ML_URL = "http://localhost:8000/predict";
+    @Value("${ml.service.url:http://localhost:8000/predict}")
+    private String mlUrl;
 
     public Map<String, Object> getFraudPrediction(Map<String, Object> features) {
-        return restTemplate.postForObject(ML_URL, features, Map.class);
+        return restTemplate.postForObject(mlUrl, features, Map.class);
     }
 }
