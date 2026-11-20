@@ -83,7 +83,7 @@ function Login({ onLogin }) {
         <div className="login-shell">
             <div className="login-card">
                 <div className="login-brand">
-                    <div className="brand-icon">🛡️</div>
+                    <div className="brand-icon"><img src="/logo.png" alt="Logo" style={{ width: "28px", height: "28px", objectFit: "contain" }} /></div>
                     <div>
                         <div className="brand-name">SecurePay</div>
                         <div className="brand-sub">INTELLIGENT TRANSACTION SECURITY</div>
@@ -149,7 +149,7 @@ function Sidebar({ page, setPage }) {
     return (
         <aside className="sidebar">
             <div className="brand">
-                <div className="brand-icon">🛡️</div>
+                <div className="brand-icon"><img src="/logo.png" alt="Logo" style={{ width: "28px", height: "28px", objectFit: "contain" }} /></div>
                 <div>
                     <div className="brand-name">SecurePay</div>
                     <div className="brand-sub">INTELLIGENT TRANSACTION SECURITY</div>
