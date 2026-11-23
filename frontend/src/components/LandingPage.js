@@ -23,7 +23,7 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
     { id: "TXN-8488", bank: "Axis Bank", city: "Hyderabad", amount: "₹3,450", risk: 14, status: "APPROVED", reason: "Trusted merchant" },
   ]);
 
-  // Periodic new simulated threat
+  // Periodic simulated live threats
   useEffect(() => {
     const interval = setInterval(() => {
       const banks = ["HDFC Bank", "ICICI Bank", "SBI", "Axis Bank", "Kotak Bank", "Standard Chartered"];
@@ -93,17 +93,22 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
 
   return (
     <div className="landing-root">
+      {/* WCAG 2.2 Accessible Skip to Content */}
+      <a href="#main-content" className="skip-to-content">
+        Skip to main content
+      </a>
+
       {/* Background ambient glowing orbs */}
-      <div className="ambient-glow glow-1"></div>
-      <div className="ambient-glow glow-2"></div>
-      <div className="ambient-grid"></div>
+      <div className="ambient-glow glow-1" aria-hidden="true"></div>
+      <div className="ambient-glow glow-2" aria-hidden="true"></div>
+      <div className="ambient-grid" aria-hidden="true"></div>
 
       {/* Top Navigation */}
-      <header className="landing-nav">
+      <header className="landing-nav" role="banner">
         <div className="nav-container">
-          <div className="brand-group">
+          <div className="brand-group" aria-label="SecurePay Home">
             <div className="brand-icon-wrap">
-              <img src="/logo.png" alt="SecurePay" className="nav-logo" />
+              <img src="/logo.png" alt="SecurePay Shield Logo" className="nav-logo" />
             </div>
             <div>
               <span className="brand-title">SecurePay</span>
@@ -111,27 +116,27 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
             </div>
           </div>
 
-          <nav className="desktop-links">
+          <nav className="desktop-links" aria-label="Landing page sections">
             <a href="#features">Banking Engine</a>
             <a href="#threat-stream">Live Radar</a>
             <a href="#card-security">Luhn Defense</a>
-            <a href="#architecture">Architecture</a>
+            <a href="#compliance">Compliance</a>
           </nav>
 
           <div className="nav-actions">
-            <span className="status-pill">
-              <span className="pulse-dot"></span> ML Engine Online
+            <span className="status-pill" role="status" aria-label="Machine Learning engine status: Online">
+              <span className="pulse-dot" aria-hidden="true"></span> ML Engine Online
             </span>
             {currentUser ? (
-              <button className="primary-cta" onClick={onOpenConsole}>
+              <button className="primary-cta" onClick={onOpenConsole} aria-label="Open your active analyst operations console">
                 Launch Console ➔
               </button>
             ) : (
               <div className="auth-btn-group">
-                <button className="ghost-btn" onClick={onOpenLogin}>
+                <button className="ghost-btn" onClick={onOpenLogin} aria-label="Sign in to your analyst account">
                   Analyst Sign In
                 </button>
-                <button className="primary-cta" onClick={onOpenConsole}>
+                <button className="primary-cta" onClick={onOpenConsole} aria-label="Launch interactive live console demo">
                   Live Demo ➔
                 </button>
               </div>
@@ -140,325 +145,338 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="hero-content">
-          <div className="hero-badge">
-            <span className="badge-spark">🛡️</span>
-            <span>ENTERPRISE 3D FRAUD SHIELD · SUB-45MS INFERENCE</span>
+      {/* Main Content Landmark for Screen Readers */}
+      <main id="main-content">
+        {/* Hero Section */}
+        <section className="hero-section" aria-labelledby="hero-title">
+          <div className="hero-content">
+            <div className="hero-badge">
+              <span className="badge-spark" aria-hidden="true">🛡️</span>
+              <span>ENTERPRISE 3D FRAUD SHIELD · SUB-45MS INFERENCE</span>
+            </div>
+
+            <h1 id="hero-title" className="hero-heading">
+              Autonomous <span className="gradient-text">Fraud Intelligence</span> for Real-Time Banking
+            </h1>
+
+            <p className="hero-description">
+              Engineered with extreme gradient boosting (XGBoost) and SMOTE synthetic balancing. 
+              Scanning card movements, velocity anomalies, and high-frequency digital channels with 
+              mathematical precision before transactions settle.
+            </p>
+
+            <div className="hero-cta-row">
+              <button className="glow-btn" onClick={onOpenConsole} aria-label="Open Live Console to test transactions">
+                <span>⚡ Open Live Console</span>
+              </button>
+              <a href="#card-security" className="outline-btn" aria-label="Jump to interactive card validation lab">
+                <span>💳 Test Luhn Algorithm</span>
+              </a>
+            </div>
+
+            {/* Quick Metrics Banner */}
+            <div className="hero-metrics-grid" role="region" aria-label="System Performance Metrics">
+              <div className="h-metric">
+                <span className="h-metric-val">99.8%</span>
+                <span className="h-metric-lbl">Fraud Recall (SMOTE Balanced)</span>
+              </div>
+              <div className="h-metric">
+                <span className="h-metric-val">&lt; 42ms</span>
+                <span className="h-metric-lbl">Live Inference Latency</span>
+              </div>
+              <div className="h-metric">
+                <span className="h-metric-val">0.982</span>
+                <span className="h-metric-lbl">ROC-AUC Discriminator Score</span>
+              </div>
+              <div className="h-metric">
+                <span className="h-metric-val">100%</span>
+                <span className="h-metric-lbl">Tokenized (Zero Plaintext Card)</span>
+              </div>
+            </div>
           </div>
 
-          <h1 className="hero-heading">
-            Autonomous <span className="gradient-text">Fraud Intelligence</span> for Real-Time Banking
-          </h1>
-
-          <p className="hero-description">
-            Engineered with extreme gradient boosting (XGBoost) and SMOTE synthetic balancing. 
-            Scanning card movements, velocity anomalies, and high-frequency digital channels with 
-            mathematical precision before transactions settle.
-          </p>
-
-          <div className="hero-cta-row">
-            <button className="glow-btn" onClick={onOpenConsole}>
-              <span>⚡ Open Live Console</span>
-            </button>
-            <a href="#card-security" className="outline-btn">
-              <span>💳 Test Luhn Algorithm</span>
-            </a>
-          </div>
-
-          {/* Quick Metrics Banner */}
-          <div className="hero-metrics-grid">
-            <div className="h-metric">
-              <span className="h-metric-val">99.8%</span>
-              <span className="h-metric-lbl">Fraud Recall (SMOTE Balanced)</span>
-            </div>
-            <div className="h-metric">
-              <span className="h-metric-val">&lt; 42ms</span>
-              <span className="h-metric-lbl">Live Inference Latency</span>
-            </div>
-            <div className="h-metric">
-              <span className="h-metric-val">0.982</span>
-              <span className="h-metric-lbl">ROC-AUC Discriminator Score</span>
-            </div>
-            <div className="h-metric">
-              <span className="h-metric-val">100%</span>
-              <span className="h-metric-lbl">Tokenized (Zero Plaintext Card)</span>
-            </div>
-          </div>
-        </div>
-
-        {/* 3D Holographic Card Interactive Component */}
-        <div className="hero-3d-wrapper">
-          <div
-            className="card-3d-scene"
-            onMouseMove={handleCardMouseMove}
-            onMouseLeave={handleCardMouseLeave}
-          >
+          {/* 3D Holographic Card Interactive Component */}
+          <div className="hero-3d-wrapper" aria-label="Interactive 3D Credit Card Preview">
             <div
-              className="holo-card"
-              style={{
-                transform: `perspective(1000px) rotateX(${cardRotate.x}deg) rotateY(${cardRotate.y}deg) scale3d(1.03, 1.03, 1.03)`,
-              }}
+              className="card-3d-scene"
+              onMouseMove={handleCardMouseMove}
+              onMouseLeave={handleCardMouseLeave}
+              tabIndex="0"
+              role="region"
+              aria-label="3D metallic credit card with holographic sheen. Interactive on mouse hover and touch."
             >
-              {/* Specular glare overlay */}
               <div
-                className="card-glare"
+                className="holo-card"
                 style={{
-                  background: `radial-gradient(circle at ${glarePos.x}% ${glarePos.y}%, rgba(255,255,255,0.4) 0%, transparent 60%)`,
-                  opacity: glarePos.opacity,
+                  transform: `perspective(1000px) rotateX(${cardRotate.x}deg) rotateY(${cardRotate.y}deg) scale3d(1.03, 1.03, 1.03)`,
                 }}
-              ></div>
+              >
+                {/* Specular glare overlay */}
+                <div
+                  className="card-glare"
+                  aria-hidden="true"
+                  style={{
+                    background: `radial-gradient(circle at ${glarePos.x}% ${glarePos.y}%, rgba(255,255,255,0.4) 0%, transparent 60%)`,
+                    opacity: glarePos.opacity,
+                  }}
+                ></div>
 
-              {/* Card Header */}
-              <div className="card-top-row">
-                <div className="card-chip">
-                  <div className="chip-line chip-line-1"></div>
-                  <div className="chip-line chip-line-2"></div>
-                </div>
-                <div className="card-contactless">
-                  <span>📶</span>
-                </div>
-                <div className="card-brand-shield">
-                  <img src="/logo.png" alt="SecurePay" />
-                  <span>SecurePay</span>
-                </div>
-              </div>
-
-              {/* Card Number */}
-              <div className="card-number-display">
-                <span>4532</span>
-                <span>8842</span>
-                <span>9100</span>
-                <span>7321</span>
-              </div>
-
-              {/* Card Meta */}
-              <div className="card-bottom-row">
-                <div>
-                  <span className="meta-label">CARDHOLDER</span>
-                  <span className="meta-value">SAHIL KUMAR · ANALYST</span>
-                </div>
-                <div>
-                  <span className="meta-label">EXPIRES</span>
-                  <span className="meta-value">11/29</span>
-                </div>
-                <div className="network-badge">
-                  <span>VISA</span>
-                </div>
-              </div>
-
-              {/* Floating Shield Badges */}
-              <div className="floating-badge badge-top-right">
-                <span className="pulse-green"></span> 3D Secure 2.0 Active
-              </div>
-              <div className="floating-badge badge-bottom-left">
-                🛡️ PCI-DSS Level 1
-              </div>
-            </div>
-          </div>
-          <p className="hint-text">✨ Move cursor or finger over card to interact with 3D perspective</p>
-        </div>
-      </section>
-
-      {/* Live Threat Radar Stream Section */}
-      <section id="threat-stream" className="section-block">
-        <div className="section-header">
-          <span className="section-eyebrow">LIVE TELEMETRY RADAR</span>
-          <h2>Real-Time Interbank Transaction Feed</h2>
-          <p>Live stream of incoming transaction movements across retail banking channels evaluated by the ML inference pipeline.</p>
-        </div>
-
-        <div className="stream-card-container">
-          <div className="stream-header-row">
-            <span>TRANSACTION ID</span>
-            <span>ISSUING BANK</span>
-            <span>LOCATION</span>
-            <span>AMOUNT</span>
-            <span>RISK SCORE</span>
-            <span>AI DECISION</span>
-          </div>
-          <div className="stream-items">
-            {liveStream.map((item) => (
-              <div key={item.id} className={`stream-row ${item.status === "FLAGGED" ? "row-flagged" : "row-safe"}`}>
-                <span className="stream-mono">{item.id}</span>
-                <span className="stream-bank">🏦 {item.bank}</span>
-                <span className="stream-city">📍 {item.city}</span>
-                <span className="stream-amt">{item.amount}</span>
-                <span className="stream-risk">
-                  <div className="risk-mini-bar">
-                    <div
-                      className="risk-mini-fill"
-                      style={{
-                        width: `${item.risk}%`,
-                        background: item.risk > 65 ? "#f43f5e" : item.risk > 35 ? "#facc15" : "#2dd4bf",
-                      }}
-                    ></div>
+                {/* Card Header */}
+                <div className="card-top-row">
+                  <div className="card-chip" aria-hidden="true">
+                    <div className="chip-line chip-line-1"></div>
+                    <div className="chip-line chip-line-2"></div>
                   </div>
-                  <strong style={{ color: item.risk > 65 ? "#fb7185" : "#4ade80" }}>{item.risk}/100</strong>
-                </span>
-                <span className={`stream-pill ${item.status === "FLAGGED" ? "pill-flagged" : "pill-safe"}`}>
-                  {item.status === "FLAGGED" ? "🚩 REJECTED & FLAGGED" : "✅ APPROVED"}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+                  <div className="card-contactless" aria-label="Contactless payment enabled">
+                    <span aria-hidden="true">📶</span>
+                  </div>
+                  <div className="card-brand-shield">
+                    <img src="/logo.png" alt="SecurePay Logo" />
+                    <span>SecurePay</span>
+                  </div>
+                </div>
 
-      {/* Real-World Banking Modules Section */}
-      <section id="features" className="section-block">
-        <div className="section-header">
-          <span className="section-eyebrow">ENTERPRISE DEFENSE MATRIX</span>
-          <h2>Real-World Banking Security Engines</h2>
-          <p>Modern card networks cannot rely on static rules. SecurePay integrates 4 autonomous defense pillars.</p>
-        </div>
+                {/* Card Number */}
+                <div className="card-number-display" aria-label="Masked card number: ending in 7321">
+                  <span>4532</span>
+                  <span>8842</span>
+                  <span>9100</span>
+                  <span>7321</span>
+                </div>
 
-        <div className="modules-grid">
-          <div className="module-card">
-            <div className="module-icon">🌐</div>
-            <h3>Geo-Velocity Engine</h3>
-            <p className="module-tagline">Impossible Travel Detection</p>
-            <p>
-              Calculates the geographical distance and delta time between sequential transaction coordinates. 
-              Flags card cloning if physically impossible speeds (&gt;800 km/h) are observed.
-            </p>
-            <ul className="module-bullets">
-              <li>✓ IP Subnet vs Cardholder Home City match</li>
-              <li>✓ Flight-time constraint calculation</li>
-              <li>✓ ATM skimming anomaly telemetry</li>
-            </ul>
-          </div>
+                {/* Card Meta */}
+                <div className="card-bottom-row">
+                  <div>
+                    <span className="meta-label">CARDHOLDER</span>
+                    <span className="meta-value">SAHIL KUMAR · ANALYST</span>
+                  </div>
+                  <div>
+                    <span className="meta-label">EXPIRES</span>
+                    <span className="meta-value">11/29</span>
+                  </div>
+                  <div className="network-badge" aria-label="Card Network: Visa">
+                    <span>VISA</span>
+                  </div>
+                </div>
 
-          <div className="module-card featured-module">
-            <div className="featured-ribbon">CORE ENGINE</div>
-            <div className="module-icon">🧠</div>
-            <h3>XGBoost + SMOTE Pipeline</h3>
-            <p className="module-tagline">Sub-45ms Machine Learning Core</p>
-            <p>
-              Trained on 284,807 transactions with 28 PCA behavioral vectors. Solves severe 0.17% class 
-              imbalance using Synthetic Minority Over-sampling to maximize recall.
-            </p>
-            <ul className="module-bullets">
-              <li>✓ 0.982 ROC-AUC high-confidence curve</li>
-              <li>✓ Zero false-alarm customer fatigue</li>
-              <li>✓ Optimized for multi-threaded cloud execution</li>
-            </ul>
-          </div>
-
-          <div className="module-card">
-            <div className="module-icon">🔐</div>
-            <h3>Luhn & Tokenization</h3>
-            <p className="module-tagline">PCI-DSS Level 1 Compliance</p>
-            <p>
-              Enforces MOD-10 checksum validation at client boundary. Raw 16-digit Primary Account Numbers (PAN) 
-              are immediately masked into irreversible cryptographic tokens.
-            </p>
-            <ul className="module-bullets">
-              <li>✓ ISO/IEC 7812 card structure validation</li>
-              <li>✓ Zero raw PAN exposure in transit</li>
-              <li>✓ Dynamic 3D Secure step-up challenge</li>
-            </ul>
-          </div>
-
-          <div className="module-card">
-            <div className="module-icon">📊</div>
-            <h3>Explainable AI (XAI)</h3>
-            <p className="module-tagline">Regulatory Compliance & Transparency</p>
-            <p>
-              Banks cannot treat AI as a black box under RBI & GDPR mandates. Every prediction yields top 
-              divergence factors explaining exactly why an analyst must review the card.
-            </p>
-            <ul className="module-bullets">
-              <li>✓ SHAP-inspired feature attribution</li>
-              <li>✓ Plain-English alert justification</li>
-              <li>✓ Automated dispute audit trails</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Interactive Luhn Algorithm Playground Section */}
-      <section id="card-security" className="section-block playground-section">
-        <div className="playground-wrap">
-          <div className="playground-left">
-            <span className="section-eyebrow">INTERACTIVE LAB</span>
-            <h2>Test the Luhn Algorithm (MOD 10) in Real-Time</h2>
-            <p>
-              Every genuine Visa, Mastercard, or RuPay card in the world obeys the mathematical Luhn formula. 
-              Try entering or modifying any 16-digit sequence to witness real-time cryptographic validation.
-            </p>
-
-            <div className="card-input-box">
-              <label>ENTER 16-DIGIT CARD NUMBER</label>
-              <div className="input-with-icon">
-                <span className="card-icon">{networkInfo.icon}</span>
-                <input
-                  type="text"
-                  value={testCard}
-                  onChange={handleTestCardChange}
-                  placeholder="4532 8910 2345 6789"
-                  maxLength={19}
-                />
-              </div>
-            </div>
-
-            {testResult && (
-              <div className={`luhn-status-card ${testResult.isValid ? "luhn-valid" : "luhn-invalid"}`}>
-                <div className="luhn-icon">{testResult.isValid ? "✅" : "⚠️"}</div>
-                <div>
-                  <h4>{testResult.isValid ? "VALID LUHN CHECKSUM" : "INVALID CARD CHECKSUM"}</h4>
-                  <p>
-                    {testResult.isValid
-                      ? `Detected as genuine ${testResult.network} format (${testResult.digits} digits). Passes ISO/IEC 7812 verification.`
-                      : `Mathematical checksum check failed. This card sequence does not match legitimate bank issuance patterns.`}
-                  </p>
+                {/* Floating Shield Badges */}
+                <div className="floating-badge badge-top-right">
+                  <span className="pulse-green" aria-hidden="true"></span> 3D Secure 2.0 Active
+                </div>
+                <div className="floating-badge badge-bottom-left">
+                  🛡️ PCI-DSS Level 1
                 </div>
               </div>
-            )}
+            </div>
+            <p className="hint-text">✨ Move cursor or finger over card to interact with 3D perspective</p>
+          </div>
+        </section>
+
+        {/* Live Threat Radar Stream Section */}
+        <section id="threat-stream" className="section-block" aria-labelledby="threat-stream-title">
+          <div className="section-header">
+            <span className="section-eyebrow">LIVE TELEMETRY RADAR</span>
+            <h2 id="threat-stream-title">Real-Time Interbank Transaction Feed</h2>
+            <p>Live stream of incoming transaction movements across retail banking channels evaluated by the ML inference pipeline.</p>
           </div>
 
-          <div className="playground-right">
-            <div className="luhn-explanation-card">
-              <h3>How does MOD 10 work?</h3>
+          <div className="stream-card-container">
+            <div className="stream-header-row" role="row">
+              <span>TRANSACTION ID</span>
+              <span>ISSUING BANK</span>
+              <span>LOCATION</span>
+              <span>AMOUNT</span>
+              <span>RISK SCORE</span>
+              <span>AI DECISION</span>
+            </div>
+            <div className="stream-items" aria-live="polite" aria-atomic="false">
+              {liveStream.map((item) => (
+                <div key={item.id} className={`stream-row ${item.status === "FLAGGED" ? "row-flagged" : "row-safe"}`} role="row">
+                  <span className="stream-mono">{item.id}</span>
+                  <span className="stream-bank">🏦 {item.bank}</span>
+                  <span className="stream-city">📍 {item.city}</span>
+                  <span className="stream-amt">{item.amount}</span>
+                  <span className="stream-risk">
+                    <div className="risk-mini-bar" role="progressbar" aria-valuenow={item.risk} aria-valuemin="0" aria-valuemax="100">
+                      <div
+                        className="risk-mini-fill"
+                        style={{
+                          width: `${item.risk}%`,
+                          background: item.risk > 65 ? "#f43f5e" : item.risk > 35 ? "#facc15" : "#2dd4bf",
+                        }}
+                      ></div>
+                    </div>
+                    <strong style={{ color: item.risk > 65 ? "#fb7185" : "#4ade80" }}>{item.risk}/100</strong>
+                  </span>
+                  <span className={`stream-pill ${item.status === "FLAGGED" ? "pill-flagged" : "pill-safe"}`}>
+                    {item.status === "FLAGGED" ? "🚩 REJECTED & FLAGGED" : "✅ APPROVED"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Real-World Banking Modules Section */}
+        <section id="features" className="section-block" aria-labelledby="features-title">
+          <div className="section-header">
+            <span className="section-eyebrow">ENTERPRISE DEFENSE MATRIX</span>
+            <h2 id="features-title">Real-World Banking Security Engines</h2>
+            <p>Modern card networks cannot rely on static rules. SecurePay integrates 4 autonomous defense pillars.</p>
+          </div>
+
+          <div className="modules-grid">
+            <article className="module-card">
+              <div className="module-icon" aria-hidden="true">🌐</div>
+              <h3>Geo-Velocity Engine</h3>
+              <p className="module-tagline">Impossible Travel Detection</p>
               <p>
-                Starting from the rightmost digit, double every second digit. If doubling results in &gt;9, subtract 9. 
-                Sum all resulting digits: if the total modulo 10 equals 0, the card number is mathematically valid!
+                Calculates the geographical distance and delta time between sequential transaction coordinates. 
+                Flags card cloning if physically impossible speeds (&gt;800 km/h) are observed.
               </p>
-              <div className="formula-box">
-                <code>(Sum(odd_digits) + Sum(doubled_even_digits)) mod 10 == 0</code>
+              <ul className="module-bullets">
+                <li>✓ IP Subnet vs Cardholder Home City match</li>
+                <li>✓ Flight-time constraint calculation</li>
+                <li>✓ ATM skimming anomaly telemetry</li>
+              </ul>
+            </article>
+
+            <article className="module-card featured-module">
+              <div className="featured-ribbon">CORE ENGINE</div>
+              <div className="module-icon" aria-hidden="true">🧠</div>
+              <h3>XGBoost + SMOTE Pipeline</h3>
+              <p className="module-tagline">Sub-45ms Machine Learning Core</p>
+              <p>
+                Trained on 284,807 transactions with 28 PCA behavioral vectors. Solves severe 0.17% class 
+                imbalance using Synthetic Minority Over-sampling to maximize recall.
+              </p>
+              <ul className="module-bullets">
+                <li>✓ 0.982 ROC-AUC high-confidence curve</li>
+                <li>✓ Zero false-alarm customer fatigue</li>
+                <li>✓ Optimized for multi-threaded cloud execution</li>
+              </ul>
+            </article>
+
+            <article className="module-card">
+              <div className="module-icon" aria-hidden="true">🔐</div>
+              <h3>Luhn & Tokenization</h3>
+              <p className="module-tagline">PCI-DSS Level 1 Compliance</p>
+              <p>
+                Enforces MOD-10 checksum validation at client boundary. Raw 16-digit Primary Account Numbers (PAN) 
+                are immediately masked into irreversible cryptographic tokens.
+              </p>
+              <ul className="module-bullets">
+                <li>✓ ISO/IEC 7812 card structure validation</li>
+                <li>✓ Zero raw PAN exposure in transit</li>
+                <li>✓ Dynamic 3D Secure step-up challenge</li>
+              </ul>
+            </article>
+
+            <article className="module-card">
+              <div className="module-icon" aria-hidden="true">📊</div>
+              <h3>Explainable AI (XAI)</h3>
+              <p className="module-tagline">Regulatory Compliance & Transparency</p>
+              <p>
+                Banks cannot treat AI as a black box under RBI & GDPR mandates. Every prediction yields top 
+                divergence factors explaining exactly why an analyst must review the card.
+              </p>
+              <ul className="module-bullets">
+                <li>✓ SHAP-inspired feature attribution</li>
+                <li>✓ Plain-English alert justification</li>
+                <li>✓ Automated dispute audit trails</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        {/* Interactive Luhn Algorithm Playground Section */}
+        <section id="card-security" className="section-block playground-section" aria-labelledby="luhn-lab-title">
+          <div className="playground-wrap">
+            <div className="playground-left">
+              <span className="section-eyebrow">INTERACTIVE LAB</span>
+              <h2 id="luhn-lab-title">Test the Luhn Algorithm (MOD 10) in Real-Time</h2>
+              <p>
+                Every genuine Visa, Mastercard, or RuPay card in the world obeys the mathematical Luhn formula. 
+                Try entering or modifying any 16-digit sequence to witness real-time cryptographic validation.
+              </p>
+
+              <div className="card-input-box">
+                <label htmlFor="luhn-interactive-input">ENTER 16-DIGIT CARD NUMBER</label>
+                <div className="input-with-icon">
+                  <span className="card-icon" aria-hidden="true">{networkInfo.icon}</span>
+                  <input
+                    id="luhn-interactive-input"
+                    type="text"
+                    value={testCard}
+                    onChange={handleTestCardChange}
+                    placeholder="4532 8910 2345 6789"
+                    maxLength={19}
+                    aria-describedby="luhn-feedback-status"
+                  />
+                </div>
               </div>
-              <div className="verified-networks">
-                <span>Supported Networks:</span>
-                <div className="network-pills">
-                  <span className="net-pill">Visa (4xxx)</span>
-                  <span className="net-pill">Mastercard (5xxx)</span>
-                  <span className="net-pill">RuPay (6xxx)</span>
-                  <span className="net-pill">Amex (3xxx)</span>
+
+              {testResult && (
+                <div
+                  id="luhn-feedback-status"
+                  className={`luhn-status-card ${testResult.isValid ? "luhn-valid" : "luhn-invalid"}`}
+                  aria-live="polite"
+                >
+                  <div className="luhn-icon" aria-hidden="true">{testResult.isValid ? "✅" : "⚠️"}</div>
+                  <div>
+                    <h4>{testResult.isValid ? "VALID LUHN CHECKSUM" : "INVALID CARD CHECKSUM"}</h4>
+                    <p>
+                      {testResult.isValid
+                        ? `Detected as genuine ${testResult.network} format (${testResult.digits} digits). Passes ISO/IEC 7812 verification.`
+                        : `Mathematical checksum check failed. This card sequence does not match legitimate bank issuance patterns.`}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="playground-right">
+              <div className="luhn-explanation-card">
+                <h3>How does MOD 10 work?</h3>
+                <p>
+                  Starting from the rightmost digit, double every second digit. If doubling results in &gt;9, subtract 9. 
+                  Sum all resulting digits: if the total modulo 10 equals 0, the card number is mathematically valid!
+                </p>
+                <div className="formula-box">
+                  <code>(Sum(odd_digits) + Sum(doubled_even_digits)) mod 10 == 0</code>
+                </div>
+                <div className="verified-networks">
+                  <span>Supported Networks:</span>
+                  <div className="network-pills">
+                    <span className="net-pill">Visa (4xxx)</span>
+                    <span className="net-pill">Mastercard (5xxx)</span>
+                    <span className="net-pill">RuPay (6xxx)</span>
+                    <span className="net-pill">Amex (3xxx)</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Call to Action Banner */}
-      <section className="cta-banner">
-        <div className="cta-banner-content">
-          <h2>Ready to test live fraud predictions?</h2>
-          <p>Open the analyst operations console to simulate transactions, view volume graphs, and examine model performance.</p>
-          <button className="glow-btn" onClick={onOpenConsole}>
-            Launch Analyst Operations Console ➔
-          </button>
-        </div>
-      </section>
+        {/* Call to Action Banner */}
+        <section className="cta-banner" aria-labelledby="cta-heading">
+          <div className="cta-banner-content">
+            <h2 id="cta-heading">Ready to test live fraud predictions?</h2>
+            <p>Open the analyst operations console to simulate transactions, view volume graphs, and examine model performance.</p>
+            <button className="glow-btn" onClick={onOpenConsole} aria-label="Launch Analyst Operations Console">
+              Launch Analyst Operations Console ➔
+            </button>
+          </div>
+        </section>
+      </main>
 
       {/* Footer */}
-      <footer className="landing-footer">
+      <footer id="compliance" className="landing-footer" role="contentinfo">
         <div className="footer-container">
           <div className="footer-col-main">
             <div className="brand-group">
-              <img src="/logo.png" alt="SecurePay" className="nav-logo" />
+              <img src="/logo.png" alt="SecurePay Shield Logo" className="nav-logo" />
               <span className="brand-title">SecurePay</span>
             </div>
             <p className="footer-desc">
@@ -484,17 +502,31 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
             <h4>CONNECT & CODE</h4>
             <ul>
               <li>
-                <a href="https://github.com/sahilkumar727/credit-card-fraud-detection" target="_blank" rel="noreferrer">
+                <a
+                  href="https://github.com/sahilkumar727/credit-card-fraud-detection"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Visit Sahil Kumar's GitHub repository for credit card fraud detection (opens in a new window)"
+                >
                   📂 GitHub Repository
                 </a>
               </li>
               <li>
-                <a href="https://linkedin.com" target="_blank" rel="noreferrer">
+                <a
+                  href="https://linkedin.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Connect with developer Sahil Kumar on LinkedIn (opens in a new window)"
+                >
                   💼 LinkedIn Profile
                 </a>
               </li>
               <li>
-                <button className="link-btn feedback-trigger" onClick={() => setShowFeedback(true)}>
+                <button
+                  className="link-btn feedback-trigger"
+                  onClick={() => setShowFeedback(true)}
+                  aria-label="Open user feedback and review submission modal"
+                >
                   💬 Send Real-User Feedback
                 </button>
               </li>
@@ -517,30 +549,43 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
         </div>
       </footer>
 
-      {/* User Feedback Modal */}
+      {/* Accessible User Feedback Modal */}
       {showFeedback && (
-        <div className="feedback-backdrop" onClick={() => setShowFeedback(false)}>
+        <div
+          className="feedback-backdrop"
+          onClick={() => setShowFeedback(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="feedback-dialog-title"
+        >
           <div className="feedback-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="close-btn" onClick={() => setShowFeedback(false)}>✕</button>
+            <button
+              className="close-btn"
+              onClick={() => setShowFeedback(false)}
+              aria-label="Close user feedback dialog"
+            >
+              ✕
+            </button>
 
             {feedbackSent ? (
-              <div className="feedback-success">
-                <span className="success-icon">🎉</span>
+              <div className="feedback-success" role="status" aria-live="polite">
+                <span className="success-icon" aria-hidden="true">🎉</span>
                 <h3>Thank you for your valuable feedback!</h3>
                 <p>Your inputs have been recorded to enhance SecurePay's real-time banking features.</p>
               </div>
             ) : (
               <>
                 <div className="modal-header">
-                  <span className="modal-icon">💬</span>
-                  <h3>User Feedback & Connect</h3>
+                  <span className="modal-icon" aria-hidden="true">💬</span>
+                  <h3 id="feedback-dialog-title">User Feedback & Connect</h3>
                   <p>Share your review, feature suggestions, or questions with developer Sahil Kumar.</p>
                 </div>
 
                 <form onSubmit={handleFeedbackSubmit} className="feedback-form">
                   <div className="f-field">
-                    <label>YOUR NAME</label>
+                    <label htmlFor="fb-name">YOUR NAME</label>
                     <input
+                      id="fb-name"
                       type="text"
                       placeholder="e.g. Rahul Sharma"
                       value={feedbackForm.name}
@@ -550,8 +595,9 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
                   </div>
 
                   <div className="f-field">
-                    <label>EMAIL ADDRESS</label>
+                    <label htmlFor="fb-email">EMAIL ADDRESS</label>
                     <input
+                      id="fb-email"
                       type="email"
                       placeholder="e.g. rahul@example.com"
                       value={feedbackForm.email}
@@ -561,8 +607,9 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
                   </div>
 
                   <div className="f-field">
-                    <label>RATING (1-5 STARS)</label>
+                    <label htmlFor="fb-rating">RATING (1-5 STARS)</label>
                     <select
+                      id="fb-rating"
                       value={feedbackForm.rating}
                       onChange={(e) => setFeedbackForm({ ...feedbackForm, rating: e.target.value })}
                     >
@@ -575,8 +622,9 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
                   </div>
 
                   <div className="f-field">
-                    <label>YOUR SUGGESTIONS / FEEDBACK</label>
+                    <label htmlFor="fb-comments">YOUR SUGGESTIONS / FEEDBACK</label>
                     <textarea
+                      id="fb-comments"
                       rows={4}
                       placeholder="What did you like about the project? Any improvements for banking fraud detection?"
                       value={feedbackForm.comments}
@@ -585,7 +633,7 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
                     ></textarea>
                   </div>
 
-                  <button type="submit" className="glow-btn full-width">
+                  <button type="submit" className="glow-btn full-width" aria-label="Submit your feedback">
                     Submit Feedback ➔
                   </button>
                 </form>

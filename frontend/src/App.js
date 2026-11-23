@@ -109,25 +109,25 @@ function Login({ onLogin, onBackToHome }) {
                     {mode === "register" && (
                         <>
                             <div className="field">
-                                <label>NAME</label>
-                                <input type="text" placeholder="Sahil Kumar" value={name} onChange={(e) => setName(e.target.value)} required />
+                                <label htmlFor="auth-name">NAME</label>
+                                <input id="auth-name" type="text" placeholder="Sahil Kumar" value={name} onChange={(e) => setName(e.target.value)} required />
                             </div>
                             <div className="field">
-                                <label>PHONE NUMBER (10 DIGITS)</label>
-                                <input type="tel" placeholder="9876543210" pattern="[0-9]{10}" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+                                <label htmlFor="auth-phone">PHONE NUMBER (10 DIGITS)</label>
+                                <input id="auth-phone" type="tel" placeholder="9876543210" pattern="[0-9]{10}" value={phone} onChange={(e) => setPhone(e.target.value)} required />
                             </div>
                         </>
                     )}
                     <div className="field">
-                        <label>EMAIL</label>
-                        <input type="email" placeholder="you@company.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                        <label htmlFor="auth-email">EMAIL</label>
+                        <input id="auth-email" type="email" placeholder="you@company.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
                     </div>
                     <div className="field">
-                        <label>PASSWORD</label>
-                        <input type="password" placeholder="••••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                        <label htmlFor="auth-password">PASSWORD</label>
+                        <input id="auth-password" type="password" placeholder="••••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
                     </div>
-                    {error && <div className="alert error">{error}</div>}
-                    <button type="submit" className="login-btn" disabled={loading}>
+                    {error && <div className="alert error" role="alert">{error}</div>}
+                    <button type="submit" className="login-btn" disabled={loading} aria-label={mode === "login" ? "Enter secure console" : "Create new analyst account"}>
                         {loading ? "Authenticating..." : mode === "login" ? "Enter secure console" : "Create account"}
                     </button>
                 </form>
@@ -460,25 +460,25 @@ function Detection({ user, onSubmitted, loading, setLoading, onLogout, onGoHome 
                     <h3>Analyze a Transaction</h3>
                     <form onSubmit={handleSubmit} className="form">
                         <div className="field">
-                            <label>ACCOUNT HOLDER NAME</label>
-                            <input name="accountHolder" value={form.accountHolder} onChange={handleChange} placeholder="e.g. Sahil Kumar" required />
+                            <label htmlFor="det-holder">ACCOUNT HOLDER NAME</label>
+                            <input id="det-holder" name="accountHolder" value={form.accountHolder} onChange={handleChange} placeholder="e.g. Sahil Kumar" required />
                         </div>
                         <div className="field-row">
                             <div className="field">
-                                <label>BANK</label>
-                                <select name="bank" value={form.bank} onChange={handleChange}>
+                                <label htmlFor="det-bank">BANK</label>
+                                <select id="det-bank" name="bank" value={form.bank} onChange={handleChange}>
                                     {BANKS.map((b) => <option key={b}>{b}</option>)}
                                 </select>
                             </div>
                             <div className="field">
-                                <label>TRANSACTION TYPE</label>
-                                <select name="txnType" value={form.txnType} onChange={handleChange}>
+                                <label htmlFor="det-type">TRANSACTION TYPE</label>
+                                <select id="det-type" name="txnType" value={form.txnType} onChange={handleChange}>
                                     {TXN_TYPES.map((t) => <option key={t}>{t}</option>)}
                                 </select>
                             </div>
                         </div>
                         <div className="field">
-                            <label>
+                            <label htmlFor="det-card">
                                 CARD NUMBER (LUHN VERIFIED)
                                 {luhnValidation && (
                                     <span style={{ marginLeft: "8px", color: luhnValidation.isValid ? "#4ade80" : "#fb7185", fontWeight: "normal" }}>
@@ -486,29 +486,29 @@ function Detection({ user, onSubmitted, loading, setLoading, onLogout, onGoHome 
                                     </span>
                                 )}
                             </label>
-                            <input name="cardNumber" value={form.cardNumber} onChange={handleChange} placeholder="1234 5678 9012 3456" maxLength={19} required />
+                            <input id="det-card" name="cardNumber" value={form.cardNumber} onChange={handleChange} placeholder="1234 5678 9012 3456" maxLength={19} required />
                         </div>
                         <div className="field-row">
                             <div className="field">
-                                <label>MERCHANT / PAYEE</label>
-                                <input name="merchant" value={form.merchant} onChange={handleChange} placeholder="e.g. Amazon" required />
+                                <label htmlFor="det-merchant">MERCHANT / PAYEE</label>
+                                <input id="det-merchant" name="merchant" value={form.merchant} onChange={handleChange} placeholder="e.g. Amazon" required />
                             </div>
                             <div className="field">
-                                <label>CITY</label>
-                                <input name="city" value={form.city} onChange={handleChange} placeholder="e.g. Delhi" required />
+                                <label htmlFor="det-city">CITY</label>
+                                <input id="det-city" name="city" value={form.city} onChange={handleChange} placeholder="e.g. Delhi" required />
                             </div>
                         </div>
                         <div className="field">
-                            <label>DEVICE</label>
-                            <select name="device" value={form.device} onChange={handleChange}>
+                            <label htmlFor="det-device">DEVICE</label>
+                            <select id="det-device" name="device" value={form.device} onChange={handleChange}>
                                 {DEVICES.map((d) => <option key={d}>{d}</option>)}
                             </select>
                         </div>
                         <div className="field">
-                            <label>AMOUNT (₹)</label>
-                            <input type="number" step="0.01" min="1" name="amount" value={form.amount} onChange={handleChange} placeholder="0.00" required />
+                            <label htmlFor="det-amount">AMOUNT (₹)</label>
+                            <input id="det-amount" type="number" step="0.01" min="1" name="amount" value={form.amount} onChange={handleChange} placeholder="0.00" required />
                         </div>
-                        <button type="submit" disabled={loading}>{loading ? "Running XGBoost Inference..." : "⚡ Run Real-Time Scoring"}</button>
+                        <button type="submit" disabled={loading} aria-label="Run real-time XGBoost ML scoring">{loading ? "Running XGBoost Inference..." : "⚡ Run Real-Time Scoring"}</button>
                     </form>
                     {error && <div className="alert error">{error}</div>}
                 </div>
