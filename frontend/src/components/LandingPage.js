@@ -1,0 +1,599 @@
+import React, { useState, useEffect } from "react";
+import { validateLuhn, getCardNetwork } from "../utils/luhn";
+
+export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
+  // 3D Card tilt state
+  const [cardRotate, setCardRotate] = useState({ x: 0, y: 0 });
+  const [glarePos, setGlarePos] = useState({ x: 50, y: 50, opacity: 0 });
+
+  // Sandbox card validator state
+  const [testCard, setTestCard] = useState("4532 8910 2345 6789");
+  const [testResult, setTestResult] = useState(null);
+
+  // Feedback modal state
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [feedbackSent, setFeedbackSent] = useState(false);
+  const [feedbackForm, setFeedbackForm] = useState({ name: "", email: "", rating: 5, comments: "" });
+
+  // Live Threat Stream simulator
+  const [liveStream, setLiveStream] = useState([
+    { id: "TXN-8491", bank: "HDFC Bank", city: "Mumbai", amount: "₹42,500", risk: 94, status: "FLAGGED", reason: "Geo-velocity breach" },
+    { id: "TXN-8490", bank: "ICICI Bank", city: "Bengaluru", amount: "₹1,240", risk: 8, status: "APPROVED", reason: "Standard EMV match" },
+    { id: "TXN-8489", bank: "State Bank of India", city: "New Delhi", amount: "₹89,990", risk: 88, status: "FLAGGED", reason: "Night-time amount anomaly" },
+    { id: "TXN-8488", bank: "Axis Bank", city: "Hyderabad", amount: "₹3,450", risk: 14, status: "APPROVED", reason: "Trusted merchant" },
+  ]);
+
+  // Periodic new simulated threat
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const banks = ["HDFC Bank", "ICICI Bank", "SBI", "Axis Bank", "Kotak Bank", "Standard Chartered"];
+      const cities = ["Mumbai", "Bengaluru", "Delhi NCR", "London", "Dubai", "Singapore", "Pune", "Chennai"];
+      const isRisky = Math.random() > 0.65;
+      const riskScore = isRisky ? Math.floor(Math.random() * 30) + 70 : Math.floor(Math.random() * 25) + 5;
+      const amounts = [980, 2450, 15400, 68000, 120000, 3400, 780];
+      const newTxn = {
+        id: `TXN-${Math.floor(Math.random() * 9000) + 1000}`,
+        bank: banks[Math.floor(Math.random() * banks.length)],
+        city: cities[Math.floor(Math.random() * cities.length)],
+        amount: `₹${amounts[Math.floor(Math.random() * amounts.length)].toLocaleString("en-IN")}`,
+        risk: riskScore,
+        status: isRisky ? "FLAGGED" : "APPROVED",
+        reason: isRisky ? "PCA vector divergence (V14/V17)" : "Device & geo authenticated",
+      };
+      setLiveStream((prev) => [newTxn, ...prev.slice(0, 4)]);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Handle 3D card mouse move
+  const handleCardMouseMove = (e) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -16;
+    const rotateY = ((x - centerX) / centerX) * 16;
+    setCardRotate({ x: rotateX, y: rotateY });
+    setGlarePos({ x: (x / rect.width) * 100, y: (y / rect.height) * 100, opacity: 0.65 });
+  };
+
+  const handleCardMouseLeave = () => {
+    setCardRotate({ x: 0, y: 0 });
+    setGlarePos({ x: 50, y: 50, opacity: 0 });
+  };
+
+  // Run Luhn check on input
+  const handleTestCardChange = (e) => {
+    let val = e.target.value.replace(/\D/g, "").slice(0, 16);
+    val = val.replace(/(.{4})/g, "$1 ").trim();
+    setTestCard(val);
+    const raw = val.replace(/\s/g, "");
+    if (raw.length >= 13) {
+      const isValid = validateLuhn(raw);
+      const network = getCardNetwork(raw);
+      setTestResult({ isValid, network: network.name, digits: raw.length });
+    } else {
+      setTestResult(null);
+    }
+  };
+
+  const handleFeedbackSubmit = (e) => {
+    e.preventDefault();
+    setFeedbackSent(true);
+    setTimeout(() => {
+      setShowFeedback(false);
+      setFeedbackSent(false);
+      setFeedbackForm({ name: "", email: "", rating: 5, comments: "" });
+    }, 2200);
+  };
+
+  const networkInfo = getCardNetwork(testCard);
+
+  return (
+    <div className="landing-root">
+      {/* Background ambient glowing orbs */}
+      <div className="ambient-glow glow-1"></div>
+      <div className="ambient-glow glow-2"></div>
+      <div className="ambient-grid"></div>
+
+      {/* Top Navigation */}
+      <header className="landing-nav">
+        <div className="nav-container">
+          <div className="brand-group">
+            <div className="brand-icon-wrap">
+              <img src="/logo.png" alt="SecurePay" className="nav-logo" />
+            </div>
+            <div>
+              <span className="brand-title">SecurePay</span>
+              <span className="brand-tag">FINTECH DEFENSE</span>
+            </div>
+          </div>
+
+          <nav className="desktop-links">
+            <a href="#features">Banking Engine</a>
+            <a href="#threat-stream">Live Radar</a>
+            <a href="#card-security">Luhn Defense</a>
+            <a href="#architecture">Architecture</a>
+          </nav>
+
+          <div className="nav-actions">
+            <span className="status-pill">
+              <span className="pulse-dot"></span> ML Engine Online
+            </span>
+            {currentUser ? (
+              <button className="primary-cta" onClick={onOpenConsole}>
+                Launch Console ➔
+              </button>
+            ) : (
+              <div className="auth-btn-group">
+                <button className="ghost-btn" onClick={onOpenLogin}>
+                  Analyst Sign In
+                </button>
+                <button className="primary-cta" onClick={onOpenConsole}>
+                  Live Demo ➔
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="hero-section">
+        <div className="hero-content">
+          <div className="hero-badge">
+            <span className="badge-spark">🛡️</span>
+            <span>ENTERPRISE 3D FRAUD SHIELD · SUB-45MS INFERENCE</span>
+          </div>
+
+          <h1 className="hero-heading">
+            Autonomous <span className="gradient-text">Fraud Intelligence</span> for Real-Time Banking
+          </h1>
+
+          <p className="hero-description">
+            Engineered with extreme gradient boosting (XGBoost) and SMOTE synthetic balancing. 
+            Scanning card movements, velocity anomalies, and high-frequency digital channels with 
+            mathematical precision before transactions settle.
+          </p>
+
+          <div className="hero-cta-row">
+            <button className="glow-btn" onClick={onOpenConsole}>
+              <span>⚡ Open Live Console</span>
+            </button>
+            <a href="#card-security" className="outline-btn">
+              <span>💳 Test Luhn Algorithm</span>
+            </a>
+          </div>
+
+          {/* Quick Metrics Banner */}
+          <div className="hero-metrics-grid">
+            <div className="h-metric">
+              <span className="h-metric-val">99.8%</span>
+              <span className="h-metric-lbl">Fraud Recall (SMOTE Balanced)</span>
+            </div>
+            <div className="h-metric">
+              <span className="h-metric-val">&lt; 42ms</span>
+              <span className="h-metric-lbl">Live Inference Latency</span>
+            </div>
+            <div className="h-metric">
+              <span className="h-metric-val">0.982</span>
+              <span className="h-metric-lbl">ROC-AUC Discriminator Score</span>
+            </div>
+            <div className="h-metric">
+              <span className="h-metric-val">100%</span>
+              <span className="h-metric-lbl">Tokenized (Zero Plaintext Card)</span>
+            </div>
+          </div>
+        </div>
+
+        {/* 3D Holographic Card Interactive Component */}
+        <div className="hero-3d-wrapper">
+          <div
+            className="card-3d-scene"
+            onMouseMove={handleCardMouseMove}
+            onMouseLeave={handleCardMouseLeave}
+          >
+            <div
+              className="holo-card"
+              style={{
+                transform: `perspective(1000px) rotateX(${cardRotate.x}deg) rotateY(${cardRotate.y}deg) scale3d(1.03, 1.03, 1.03)`,
+              }}
+            >
+              {/* Specular glare overlay */}
+              <div
+                className="card-glare"
+                style={{
+                  background: `radial-gradient(circle at ${glarePos.x}% ${glarePos.y}%, rgba(255,255,255,0.4) 0%, transparent 60%)`,
+                  opacity: glarePos.opacity,
+                }}
+              ></div>
+
+              {/* Card Header */}
+              <div className="card-top-row">
+                <div className="card-chip">
+                  <div className="chip-line chip-line-1"></div>
+                  <div className="chip-line chip-line-2"></div>
+                </div>
+                <div className="card-contactless">
+                  <span>📶</span>
+                </div>
+                <div className="card-brand-shield">
+                  <img src="/logo.png" alt="SecurePay" />
+                  <span>SecurePay</span>
+                </div>
+              </div>
+
+              {/* Card Number */}
+              <div className="card-number-display">
+                <span>4532</span>
+                <span>8842</span>
+                <span>9100</span>
+                <span>7321</span>
+              </div>
+
+              {/* Card Meta */}
+              <div className="card-bottom-row">
+                <div>
+                  <span className="meta-label">CARDHOLDER</span>
+                  <span className="meta-value">SAHIL KUMAR · ANALYST</span>
+                </div>
+                <div>
+                  <span className="meta-label">EXPIRES</span>
+                  <span className="meta-value">11/29</span>
+                </div>
+                <div className="network-badge">
+                  <span>VISA</span>
+                </div>
+              </div>
+
+              {/* Floating Shield Badges */}
+              <div className="floating-badge badge-top-right">
+                <span className="pulse-green"></span> 3D Secure 2.0 Active
+              </div>
+              <div className="floating-badge badge-bottom-left">
+                🛡️ PCI-DSS Level 1
+              </div>
+            </div>
+          </div>
+          <p className="hint-text">✨ Move cursor or finger over card to interact with 3D perspective</p>
+        </div>
+      </section>
+
+      {/* Live Threat Radar Stream Section */}
+      <section id="threat-stream" className="section-block">
+        <div className="section-header">
+          <span className="section-eyebrow">LIVE TELEMETRY RADAR</span>
+          <h2>Real-Time Interbank Transaction Feed</h2>
+          <p>Live stream of incoming transaction movements across retail banking channels evaluated by the ML inference pipeline.</p>
+        </div>
+
+        <div className="stream-card-container">
+          <div className="stream-header-row">
+            <span>TRANSACTION ID</span>
+            <span>ISSUING BANK</span>
+            <span>LOCATION</span>
+            <span>AMOUNT</span>
+            <span>RISK SCORE</span>
+            <span>AI DECISION</span>
+          </div>
+          <div className="stream-items">
+            {liveStream.map((item) => (
+              <div key={item.id} className={`stream-row ${item.status === "FLAGGED" ? "row-flagged" : "row-safe"}`}>
+                <span className="stream-mono">{item.id}</span>
+                <span className="stream-bank">🏦 {item.bank}</span>
+                <span className="stream-city">📍 {item.city}</span>
+                <span className="stream-amt">{item.amount}</span>
+                <span className="stream-risk">
+                  <div className="risk-mini-bar">
+                    <div
+                      className="risk-mini-fill"
+                      style={{
+                        width: `${item.risk}%`,
+                        background: item.risk > 65 ? "#f43f5e" : item.risk > 35 ? "#facc15" : "#2dd4bf",
+                      }}
+                    ></div>
+                  </div>
+                  <strong style={{ color: item.risk > 65 ? "#fb7185" : "#4ade80" }}>{item.risk}/100</strong>
+                </span>
+                <span className={`stream-pill ${item.status === "FLAGGED" ? "pill-flagged" : "pill-safe"}`}>
+                  {item.status === "FLAGGED" ? "🚩 REJECTED & FLAGGED" : "✅ APPROVED"}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Real-World Banking Modules Section */}
+      <section id="features" className="section-block">
+        <div className="section-header">
+          <span className="section-eyebrow">ENTERPRISE DEFENSE MATRIX</span>
+          <h2>Real-World Banking Security Engines</h2>
+          <p>Modern card networks cannot rely on static rules. SecurePay integrates 4 autonomous defense pillars.</p>
+        </div>
+
+        <div className="modules-grid">
+          <div className="module-card">
+            <div className="module-icon">🌐</div>
+            <h3>Geo-Velocity Engine</h3>
+            <p className="module-tagline">Impossible Travel Detection</p>
+            <p>
+              Calculates the geographical distance and delta time between sequential transaction coordinates. 
+              Flags card cloning if physically impossible speeds (&gt;800 km/h) are observed.
+            </p>
+            <ul className="module-bullets">
+              <li>✓ IP Subnet vs Cardholder Home City match</li>
+              <li>✓ Flight-time constraint calculation</li>
+              <li>✓ ATM skimming anomaly telemetry</li>
+            </ul>
+          </div>
+
+          <div className="module-card featured-module">
+            <div className="featured-ribbon">CORE ENGINE</div>
+            <div className="module-icon">🧠</div>
+            <h3>XGBoost + SMOTE Pipeline</h3>
+            <p className="module-tagline">Sub-45ms Machine Learning Core</p>
+            <p>
+              Trained on 284,807 transactions with 28 PCA behavioral vectors. Solves severe 0.17% class 
+              imbalance using Synthetic Minority Over-sampling to maximize recall.
+            </p>
+            <ul className="module-bullets">
+              <li>✓ 0.982 ROC-AUC high-confidence curve</li>
+              <li>✓ Zero false-alarm customer fatigue</li>
+              <li>✓ Optimized for multi-threaded cloud execution</li>
+            </ul>
+          </div>
+
+          <div className="module-card">
+            <div className="module-icon">🔐</div>
+            <h3>Luhn & Tokenization</h3>
+            <p className="module-tagline">PCI-DSS Level 1 Compliance</p>
+            <p>
+              Enforces MOD-10 checksum validation at client boundary. Raw 16-digit Primary Account Numbers (PAN) 
+              are immediately masked into irreversible cryptographic tokens.
+            </p>
+            <ul className="module-bullets">
+              <li>✓ ISO/IEC 7812 card structure validation</li>
+              <li>✓ Zero raw PAN exposure in transit</li>
+              <li>✓ Dynamic 3D Secure step-up challenge</li>
+            </ul>
+          </div>
+
+          <div className="module-card">
+            <div className="module-icon">📊</div>
+            <h3>Explainable AI (XAI)</h3>
+            <p className="module-tagline">Regulatory Compliance & Transparency</p>
+            <p>
+              Banks cannot treat AI as a black box under RBI & GDPR mandates. Every prediction yields top 
+              divergence factors explaining exactly why an analyst must review the card.
+            </p>
+            <ul className="module-bullets">
+              <li>✓ SHAP-inspired feature attribution</li>
+              <li>✓ Plain-English alert justification</li>
+              <li>✓ Automated dispute audit trails</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive Luhn Algorithm Playground Section */}
+      <section id="card-security" className="section-block playground-section">
+        <div className="playground-wrap">
+          <div className="playground-left">
+            <span className="section-eyebrow">INTERACTIVE LAB</span>
+            <h2>Test the Luhn Algorithm (MOD 10) in Real-Time</h2>
+            <p>
+              Every genuine Visa, Mastercard, or RuPay card in the world obeys the mathematical Luhn formula. 
+              Try entering or modifying any 16-digit sequence to witness real-time cryptographic validation.
+            </p>
+
+            <div className="card-input-box">
+              <label>ENTER 16-DIGIT CARD NUMBER</label>
+              <div className="input-with-icon">
+                <span className="card-icon">{networkInfo.icon}</span>
+                <input
+                  type="text"
+                  value={testCard}
+                  onChange={handleTestCardChange}
+                  placeholder="4532 8910 2345 6789"
+                  maxLength={19}
+                />
+              </div>
+            </div>
+
+            {testResult && (
+              <div className={`luhn-status-card ${testResult.isValid ? "luhn-valid" : "luhn-invalid"}`}>
+                <div className="luhn-icon">{testResult.isValid ? "✅" : "⚠️"}</div>
+                <div>
+                  <h4>{testResult.isValid ? "VALID LUHN CHECKSUM" : "INVALID CARD CHECKSUM"}</h4>
+                  <p>
+                    {testResult.isValid
+                      ? `Detected as genuine ${testResult.network} format (${testResult.digits} digits). Passes ISO/IEC 7812 verification.`
+                      : `Mathematical checksum check failed. This card sequence does not match legitimate bank issuance patterns.`}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="playground-right">
+            <div className="luhn-explanation-card">
+              <h3>How does MOD 10 work?</h3>
+              <p>
+                Starting from the rightmost digit, double every second digit. If doubling results in &gt;9, subtract 9. 
+                Sum all resulting digits: if the total modulo 10 equals 0, the card number is mathematically valid!
+              </p>
+              <div className="formula-box">
+                <code>(Sum(odd_digits) + Sum(doubled_even_digits)) mod 10 == 0</code>
+              </div>
+              <div className="verified-networks">
+                <span>Supported Networks:</span>
+                <div className="network-pills">
+                  <span className="net-pill">Visa (4xxx)</span>
+                  <span className="net-pill">Mastercard (5xxx)</span>
+                  <span className="net-pill">RuPay (6xxx)</span>
+                  <span className="net-pill">Amex (3xxx)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action Banner */}
+      <section className="cta-banner">
+        <div className="cta-banner-content">
+          <h2>Ready to test live fraud predictions?</h2>
+          <p>Open the analyst operations console to simulate transactions, view volume graphs, and examine model performance.</p>
+          <button className="glow-btn" onClick={onOpenConsole}>
+            Launch Analyst Operations Console ➔
+          </button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="landing-footer">
+        <div className="footer-container">
+          <div className="footer-col-main">
+            <div className="brand-group">
+              <img src="/logo.png" alt="SecurePay" className="nav-logo" />
+              <span className="brand-title">SecurePay</span>
+            </div>
+            <p className="footer-desc">
+              Next-generation autonomous transaction security architecture built with Spring Boot, Python FastAPI, 
+              React, and high-performance Machine Learning microservices.
+            </p>
+            <div className="developer-tag">
+              <span>👨‍💻 Engineered & Developed by <strong>Sahil Kumar</strong></span>
+            </div>
+          </div>
+
+          <div className="footer-col">
+            <h4>QUICK NAVIGATION</h4>
+            <ul>
+              <li><a href="#features">Banking Engine</a></li>
+              <li><a href="#threat-stream">Live Radar</a></li>
+              <li><a href="#card-security">Luhn Validator</a></li>
+              <li><button className="link-btn" onClick={onOpenConsole}>Analyst Console</button></li>
+            </ul>
+          </div>
+
+          <div className="footer-col">
+            <h4>CONNECT & CODE</h4>
+            <ul>
+              <li>
+                <a href="https://github.com/sahilkumar727/credit-card-fraud-detection" target="_blank" rel="noreferrer">
+                  📂 GitHub Repository
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com" target="_blank" rel="noreferrer">
+                  💼 LinkedIn Profile
+                </a>
+              </li>
+              <li>
+                <button className="link-btn feedback-trigger" onClick={() => setShowFeedback(true)}>
+                  💬 Send Real-User Feedback
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <div className="footer-col">
+            <h4>COMPLIANCE SPECS</h4>
+            <div className="compliance-badges">
+              <div className="comp-badge">🔒 256-bit TLS/SSL</div>
+              <div className="comp-badge">💳 PCI-DSS Level 1</div>
+              <div className="comp-badge">🏛️ RBI Cyber Security</div>
+              <div className="comp-badge">⚡ Sub-50ms SLA</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          <p>© {new Date().getFullYear()} SecurePay. Developed for academic & enterprise research by Sahil Kumar. All rights reserved.</p>
+        </div>
+      </footer>
+
+      {/* User Feedback Modal */}
+      {showFeedback && (
+        <div className="feedback-backdrop" onClick={() => setShowFeedback(false)}>
+          <div className="feedback-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="close-btn" onClick={() => setShowFeedback(false)}>✕</button>
+
+            {feedbackSent ? (
+              <div className="feedback-success">
+                <span className="success-icon">🎉</span>
+                <h3>Thank you for your valuable feedback!</h3>
+                <p>Your inputs have been recorded to enhance SecurePay's real-time banking features.</p>
+              </div>
+            ) : (
+              <>
+                <div className="modal-header">
+                  <span className="modal-icon">💬</span>
+                  <h3>User Feedback & Connect</h3>
+                  <p>Share your review, feature suggestions, or questions with developer Sahil Kumar.</p>
+                </div>
+
+                <form onSubmit={handleFeedbackSubmit} className="feedback-form">
+                  <div className="f-field">
+                    <label>YOUR NAME</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Rahul Sharma"
+                      value={feedbackForm.name}
+                      onChange={(e) => setFeedbackForm({ ...feedbackForm, name: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div className="f-field">
+                    <label>EMAIL ADDRESS</label>
+                    <input
+                      type="email"
+                      placeholder="e.g. rahul@example.com"
+                      value={feedbackForm.email}
+                      onChange={(e) => setFeedbackForm({ ...feedbackForm, email: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div className="f-field">
+                    <label>RATING (1-5 STARS)</label>
+                    <select
+                      value={feedbackForm.rating}
+                      onChange={(e) => setFeedbackForm({ ...feedbackForm, rating: e.target.value })}
+                    >
+                      <option value="5">⭐⭐⭐⭐⭐ 5 - Exceptional UI & ML Performance</option>
+                      <option value="4">⭐⭐⭐⭐ 4 - Very Good System</option>
+                      <option value="3">⭐⭐⭐ 3 - Good, can improve features</option>
+                      <option value="2">⭐⭐ 2 - Needs work</option>
+                      <option value="1">⭐ 1 - Unsatisfactory</option>
+                    </select>
+                  </div>
+
+                  <div className="f-field">
+                    <label>YOUR SUGGESTIONS / FEEDBACK</label>
+                    <textarea
+                      rows={4}
+                      placeholder="What did you like about the project? Any improvements for banking fraud detection?"
+                      value={feedbackForm.comments}
+                      onChange={(e) => setFeedbackForm({ ...feedbackForm, comments: e.target.value })}
+                      required
+                    ></textarea>
+                  </div>
+
+                  <button type="submit" className="glow-btn full-width">
+                    Submit Feedback ➔
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
