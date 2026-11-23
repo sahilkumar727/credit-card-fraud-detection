@@ -128,16 +128,16 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
               <span className="pulse-dot" aria-hidden="true"></span> ML Engine Online
             </span>
             {currentUser ? (
-              <button className="primary-cta" onClick={onOpenConsole} aria-label="Open your active analyst operations console">
-                Launch Console ➔
+              <button className="primary-cta" onClick={onOpenConsole} aria-label="Launch Live Console">
+                Launch Live Console ➔
               </button>
             ) : (
               <div className="auth-btn-group">
                 <button className="ghost-btn" onClick={onOpenLogin} aria-label="Sign in to your analyst account">
                   Analyst Sign In
                 </button>
-                <button className="primary-cta" onClick={onOpenConsole} aria-label="Launch interactive live console demo">
-                  Live Demo ➔
+                <button className="primary-cta" onClick={onOpenConsole} aria-label="Launch Live Console">
+                  Launch Live Console ➔
                 </button>
               </div>
             )}
@@ -166,8 +166,8 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
             </p>
 
             <div className="hero-cta-row">
-              <button className="glow-btn" onClick={onOpenConsole} aria-label="Open Live Console to test transactions">
-                <span>⚡ Open Live Console</span>
+              <button className="glow-btn" onClick={onOpenConsole} aria-label="Launch Live Console">
+                <span>⚡ Launch Live Console</span>
               </button>
               <a href="#card-security" className="outline-btn" aria-label="Jump to interactive card validation lab">
                 <span>💳 Test Luhn Algorithm</span>
@@ -464,8 +464,8 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
           <div className="cta-banner-content">
             <h2 id="cta-heading">Ready to test live fraud predictions?</h2>
             <p>Open the analyst operations console to simulate transactions, view volume graphs, and examine model performance.</p>
-            <button className="glow-btn" onClick={onOpenConsole} aria-label="Launch Analyst Operations Console">
-              Launch Analyst Operations Console ➔
+            <button className="glow-btn" onClick={onOpenConsole} aria-label="Launch Live Console">
+              Launch Live Console ➔
             </button>
           </div>
         </section>
@@ -494,7 +494,7 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
               <li><a href="#features">Banking Engine</a></li>
               <li><a href="#threat-stream">Live Radar</a></li>
               <li><a href="#card-security">Luhn Validator</a></li>
-              <li><button className="link-btn" onClick={onOpenConsole}>Analyst Console</button></li>
+              <li><button className="link-btn" onClick={onOpenConsole} aria-label="Launch Live Console">Launch Live Console</button></li>
             </ul>
           </div>
 
