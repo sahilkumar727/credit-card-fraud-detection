@@ -42,14 +42,43 @@
   outline: 3px solid #fff;
 }
 
+/* WCAG 2.2 Ultra-Visible Focus Outline (SC 2.4.7 Level AA & SC 2.4.13 Level AAA)
+   Provides >= 3px solid sky cyan outline (#38bdf8) with >= 8:1 contrast against dark canvas,
+   ensuring unambiguous visibility when tabbing through buttons, links, and inputs. */
+:focus-visible,
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
-[tabindex="0"]:focus-visible {
-  outline: 2px solid var(--cyan-primary) !important;
+[tabindex="0"]:focus-visible,
+.primary-cta:focus-visible,
+.glow-btn:focus-visible,
+.outline-btn:focus-visible,
+.ghost-btn:focus-visible,
+.validate-btn:focus-visible,
+.preset-pill:focus-visible,
+.link-btn:focus-visible,
+.login-btn:focus-visible,
+#luhn-interactive-input:focus-visible {
+  outline: 3px solid #38bdf8 !important;
   outline-offset: 3px !important;
+  box-shadow: 0 0 0 5px rgba(56, 189, 248, 0.45) !important;
+}
+
+/* Explicit focus fallback for keyboard tabbing and accessibility inspectors */
+.primary-cta:focus,
+.glow-btn:focus,
+.outline-btn:focus,
+.ghost-btn:focus,
+.validate-btn:focus,
+.preset-pill:focus,
+.link-btn:focus,
+.login-btn:focus,
+#luhn-interactive-input:focus {
+  outline: 3px solid #38bdf8 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 5px rgba(56, 189, 248, 0.45) !important;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -220,7 +249,7 @@ body {
 }
 .ghost-btn:hover {
   color: #fff;
-  border-color: #475569;
+  border-color: #94A3B8;
   background: rgba(255, 255, 255, 0.04);
 }
 .primary-cta {
@@ -729,40 +758,195 @@ body {
   margin-bottom: 26px;
 }
 
-.card-input-box label {
-  display: block;
+.card-input-box {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.input-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.input-header-row label {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.8px;
   color: var(--cyan-primary);
-  margin-bottom: 8px;
+  margin-bottom: 0;
 }
+
+/* Explicit Validation State Indicator Badge */
+.validation-state-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  transition: all 0.2s ease;
+}
+
+.validation-state-indicator.state-valid {
+  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid #10b981;
+  color: #34d399;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+}
+
+.validation-state-indicator.state-invalid {
+  background: rgba(244, 63, 94, 0.18);
+  border: 1px solid #f43f5e;
+  color: #fb7185;
+  box-shadow: 0 0 12px rgba(244, 63, 94, 0.25);
+}
+
+.validation-state-indicator.state-idle {
+  background: rgba(148, 163, 184, 0.1);
+  border: 1px solid #94a3b8;
+  color: #94a3b8;
+}
+
+.card-input-action-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 .input-with-icon {
   position: relative;
   display: flex;
   align-items: center;
+  flex: 1;
+  min-width: 260px;
 }
+
 .card-icon {
   position: absolute;
   left: 14px;
   font-size: 20px;
+  pointer-events: none;
 }
+
 .input-with-icon input {
   width: 100%;
-  background: #0f172a;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 14px 14px 14px 48px;
+  background: #0b1329;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 13px 14px 13px 48px;
   border-radius: 10px;
   color: #fff;
-  font-size: 18px;
+  font-size: 17px;
   font-family: monospace;
   letter-spacing: 2px;
-  outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
-.input-with-icon input:focus {
-  border-color: var(--cyan-primary);
-  box-shadow: 0 0 16px rgba(45, 212, 191, 0.2);
+
+.input-with-icon input:focus,
+.input-with-icon input:focus-visible {
+  border-color: #38bdf8 !important;
+  outline: 3px solid #38bdf8 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 5px rgba(56, 189, 248, 0.45) !important;
+}
+
+/* Explicit Validate Card Action Button */
+.validate-btn {
+  background: linear-gradient(135deg, #2dd4bf, #0ea5e9);
+  color: #03141f;
+  border: none;
+  padding: 13px 22px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(45, 212, 191, 0.3);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.validate-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(45, 212, 191, 0.45);
+}
+
+.validate-btn:focus,
+.validate-btn:focus-visible {
+  outline: 3px solid #38bdf8 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 5px rgba(56, 189, 248, 0.45) !important;
+}
+
+/* Quick Test Presets Bar */
+.card-presets-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.preset-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.preset-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.preset-pill {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  padding: 4px 11px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.preset-pill:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.preset-pill.preset-pass {
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #4ade80;
+}
+
+.preset-pill.preset-pass:hover {
+  background: rgba(16, 185, 129, 0.15);
+}
+
+.preset-pill.preset-bad {
+  border-color: rgba(244, 63, 94, 0.3);
+  color: #fb7185;
+}
+
+.preset-pill.preset-bad:hover {
+  background: rgba(244, 63, 94, 0.15);
+}
+
+.preset-pill:focus,
+.preset-pill:focus-visible {
+  outline: 3px solid #38bdf8 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.4) !important;
 }
 
 .luhn-status-card {
@@ -1032,9 +1216,9 @@ body {
   display: flex; align-items: center; justify-content: center;
 }
 .brand-name { color: #fff; font-weight: 700; font-size: 15px; }
-.brand-sub { color: #64748b; font-size: 9px; letter-spacing: 0.6px; }
+.brand-sub { color: #94A3B8; font-size: 9px; letter-spacing: 0.6px; }
 
-.nav-label { color: #475569; font-size: 11px; letter-spacing: 1px; margin: 10px 6px 8px; font-weight: 700; }
+.nav-label { color: #94A3B8; font-size: 11px; letter-spacing: 1px; margin: 10px 6px 8px; font-weight: 700; }
 .nav-item {
   display: flex; align-items: center; gap: 10px;
   width: 100%; background: none; border: none; text-align: left;
@@ -1054,7 +1238,7 @@ body {
   padding: 14px;
 }
 .engine-dot { color: var(--cyan-primary); font-size: 12.5px; font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
-.engine-desc { color: #64748b; font-size: 11px; line-height: 1.4; }
+.engine-desc { color: #94A3B8; font-size: 11px; line-height: 1.4; }
 .pulse {
   width: 7px; height: 7px; border-radius: 50%; background: var(--cyan-primary);
   box-shadow: 0 0 6px var(--cyan-primary); display: inline-block;
@@ -1065,7 +1249,7 @@ body {
 
 .topbar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 22px; }
 .topbar h1 { color: #f1f5f9; font-size: 24px; margin-bottom: 4px; font-weight: 800; }
-.topbar p { color: #64748b; font-size: 13px; }
+.topbar p { color: #94A3B8; font-size: 13px; }
 .topbar-right { display: flex; align-items: center; gap: 12px; }
 
 .pill-ghost-btn {
@@ -1142,7 +1326,7 @@ body {
 .stat-card.accent-green { border-top-color: #22c55e; }
 .stat-card.accent-red { border-top-color: #f43f5e; }
 .stat-card.accent-yellow { border-top-color: #facc15; }
-.stat-label { color: #64748b; font-size: 11.5px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
+.stat-label { color: #94A3B8; font-size: 11.5px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
 .stat-value { color: #f1f5f9; font-size: 26px; font-weight: 800; }
 
 /* Panels */
@@ -1156,16 +1340,16 @@ body {
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 th {
-  text-align: left; color: #64748b; font-size: 11px; text-transform: uppercase;
+  text-align: left; color: #94A3B8; font-size: 11px; text-transform: uppercase;
   letter-spacing: 0.5px; padding: 10px 12px; border-bottom: 1px solid var(--border-subtle); font-weight: 700;
 }
 td { padding: 12px; border-bottom: 1px solid #131c2e; color: #cbd5e1; vertical-align: middle; }
 .mono { font-family: monospace; color: var(--cyan-primary); }
-.muted { color: #64748b; font-size: 12px; }
+.muted { color: #94A3B8; font-size: 12px; }
 .bank-cell strong { color: #e2e8f0; font-size: 13px; display: block; }
-.bank-cell span { color: #64748b; font-size: 11px; }
+.bank-cell span { color: #94A3B8; font-size: 11px; }
 .amount { color: #f1f5f9; font-weight: 700; }
-.empty { text-align: center; padding: 40px; color: #475569; }
+.empty { text-align: center; padding: 40px; color: #94A3B8; }
 
 .risk-wrap { display: flex; align-items: center; gap: 8px; }
 .risk-bar-bg { width: 60px; height: 6px; background: #1e293b; border-radius: 4px; overflow: hidden; }
@@ -1188,7 +1372,7 @@ td { padding: 12px; border-bottom: 1px solid #131c2e; color: #cbd5e1; vertical-a
   padding: 7px 14px; border-radius: 20px; font-size: 12.5px; cursor: pointer;
 }
 .pill.active { background: rgba(45, 212, 191, 0.12); border-color: var(--cyan-primary); color: var(--cyan-primary); font-weight: 700; }
-.showing { color: #64748b; font-size: 12.5px; margin-bottom: 12px; }
+.showing { color: #94A3B8; font-size: 12.5px; margin-bottom: 12px; }
 
 /* Detection Page */
 .detect-grid { display: grid; grid-template-columns: 390px 1fr; gap: 20px; align-items: start; }
@@ -1222,7 +1406,7 @@ td { padding: 12px; border-bottom: 1px solid #131c2e; color: #cbd5e1; vertical-a
 }
 
 .result-panel { min-height: 440px; }
-.empty-result { text-align: center; padding: 60px 20px; color: #475569; }
+.empty-result { text-align: center; padding: 60px 20px; color: #94A3B8; }
 .empty-icon { font-size: 34px; margin-bottom: 12px; }
 .empty-title { color: #94a3b8; font-weight: 700; margin-bottom: 6px; font-size: 15px; }
 
@@ -1240,7 +1424,7 @@ td { padding: 12px; border-bottom: 1px solid #131c2e; color: #cbd5e1; vertical-a
 
 .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
 .result-grid div { background: #070d18; border: 1px solid var(--border-subtle); border-radius: 8px; padding: 12px; }
-.result-grid span { display: block; color: #64748b; font-size: 11px; margin-bottom: 4px; font-weight: 600; }
+.result-grid span { display: block; color: #94A3B8; font-size: 11px; margin-bottom: 4px; font-weight: 600; }
 .result-grid strong { color: #e2e8f0; font-size: 14px; }
 
 /* Explainable AI (XAI) Box */
@@ -1359,7 +1543,7 @@ td { padding: 12px; border-bottom: 1px solid #131c2e; color: #cbd5e1; vertical-a
 .risk-dist-row { display: flex; align-items: flex-end; gap: 20px; height: 160px; padding-top: 20px; }
 .risk-dist-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
 .risk-dist-bar { width: 100%; border-radius: 6px 6px 0 0; }
-.risk-dist-label { color: #64748b; font-size: 11px; margin-top: 8px; }
+.risk-dist-label { color: #94A3B8; font-size: 11px; margin-top: 8px; }
 .risk-dist-count { color: #e2e8f0; font-size: 13px; font-weight: 700; }
 
 /* ==========================================================================
@@ -1398,7 +1582,7 @@ td { padding: 12px; border-bottom: 1px solid #131c2e; color: #cbd5e1; vertical-a
 
 .login-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
 .login-card h2 { color: #fff; font-size: 24px; margin-bottom: 8px; font-weight: 800; }
-.login-sub { color: #64748b; font-size: 13px; margin-bottom: 24px; line-height: 1.5; }
+.login-sub { color: #94A3B8; font-size: 13px; margin-bottom: 24px; line-height: 1.5; }
 .login-card .field { margin-bottom: 16px; }
 .login-card label { color: #94a3b8; font-size: 11px; letter-spacing: 0.6px; font-weight: 700; display: block; margin-bottom: 6px; }
 .login-card input {
@@ -1419,8 +1603,8 @@ td { padding: 12px; border-bottom: 1px solid #131c2e; color: #cbd5e1; vertical-a
   cursor: pointer;
   margin-top: 6px;
 }
-.login-footer { margin-top: 22px; text-align: center; color: #64748b; font-size: 12px; }
-.login-switch { text-align: center; color: #64748b; font-size: 13px; margin-top: 18px; }
+.login-footer { margin-top: 22px; text-align: center; color: #94A3B8; font-size: 12px; }
+.login-switch { text-align: center; color: #94A3B8; font-size: 13px; margin-top: 18px; }
 .login-switch span { color: var(--cyan-primary); cursor: pointer; font-weight: 700; }
 
 /* Responsive Queries */

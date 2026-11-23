@@ -6,9 +6,17 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
   const [cardRotate, setCardRotate] = useState({ x: 0, y: 0 });
   const [glarePos, setGlarePos] = useState({ x: 50, y: 50, opacity: 0 });
 
-  // Sandbox card validator state
-  const [testCard, setTestCard] = useState("4532 8910 2345 6789");
-  const [testResult, setTestResult] = useState(null);
+  // Sandbox card validator state (Initialized with verified Visa card)
+  const [testCard, setTestCard] = useState("4532 8910 2345 6784");
+  const [testResult, setTestResult] = useState(() => {
+    const raw = "4532891023456784";
+    return {
+      isValid: validateLuhn(raw),
+      network: getCardNetwork(raw).name,
+      digits: raw.length,
+      incomplete: false,
+    };
+  });
 
   // Feedback modal state
   const [showFeedback, setShowFeedback] = useState(false);
@@ -73,10 +81,31 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
     if (raw.length >= 13) {
       const isValid = validateLuhn(raw);
       const network = getCardNetwork(raw);
-      setTestResult({ isValid, network: network.name, digits: raw.length });
+      setTestResult({ isValid, network: network.name, digits: raw.length, incomplete: false });
+    } else if (raw.length > 0) {
+      setTestResult({ isValid: false, network: "Card", digits: raw.length, incomplete: true });
     } else {
       setTestResult(null);
     }
+  };
+
+  const handleValidateClick = () => {
+    const raw = testCard.replace(/\s/g, "");
+    if (raw.length >= 13) {
+      const isValid = validateLuhn(raw);
+      const network = getCardNetwork(raw);
+      setTestResult({ isValid, network: network.name, digits: raw.length, incomplete: false });
+    } else {
+      setTestResult({ isValid: false, network: "Card", digits: raw.length, incomplete: true });
+    }
+  };
+
+  const handlePresetSelect = (presetCard) => {
+    setTestCard(presetCard);
+    const raw = presetCard.replace(/\s/g, "");
+    const isValid = validateLuhn(raw);
+    const network = getCardNetwork(raw);
+    setTestResult({ isValid, network: network.name, digits: raw.length, incomplete: false });
   };
 
   const handleFeedbackSubmit = (e) => {
@@ -401,18 +430,95 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
               </p>
 
               <div className="card-input-box">
-                <label htmlFor="luhn-interactive-input">ENTER 16-DIGIT CARD NUMBER</label>
-                <div className="input-with-icon">
-                  <span className="card-icon" aria-hidden="true">{networkInfo.icon}</span>
-                  <input
-                    id="luhn-interactive-input"
-                    type="text"
-                    value={testCard}
-                    onChange={handleTestCardChange}
-                    placeholder="4532 8910 2345 6789"
-                    maxLength={19}
-                    aria-describedby="luhn-feedback-status"
-                  />
+                <div className="input-header-row">
+                  <label htmlFor="luhn-interactive-input">ENTER 16-DIGIT CARD NUMBER</label>
+                  
+                  {/* Explicit Inline Submit / Validation State Indicator */}
+                  <div
+                    id="card-validation-badge"
+                    className={`validation-state-indicator ${
+                      testResult
+                        ? testResult.isValid
+                          ? "state-valid"
+                          : "state-invalid"
+                        : "state-idle"
+                    }`}
+                    role="status"
+                    aria-live="polite"
+                  >
+                    <span className="badge-icon" aria-hidden="true">
+                      {testResult ? (testResult.isValid ? "✓" : "✗") : "ℹ️"}
+                    </span>
+                    <span className="badge-text">
+                      {testResult
+                        ? testResult.isValid
+                          ? `PASSED · VALID ${testResult.network.toUpperCase()}`
+                          : testResult.incomplete
+                          ? `INCOMPLETE (${testResult.digits}/16 DIGITS)`
+                          : "CHECKSUM FAILED (INVALID)"
+                        : "READY · ENTER 16 DIGITS"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="card-input-action-row">
+                  <div className="input-with-icon">
+                    <span className="card-icon" aria-hidden="true">{networkInfo.icon}</span>
+                    <input
+                      id="luhn-interactive-input"
+                      type="text"
+                      value={testCard}
+                      onChange={handleTestCardChange}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleValidateClick();
+                        }
+                      }}
+                      placeholder="4532 8910 2345 6784"
+                      maxLength={19}
+                      aria-label="Test the Luhn Algorithm interactive card input"
+                      aria-describedby="card-validation-badge luhn-feedback-status"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    className="validate-btn"
+                    onClick={handleValidateClick}
+                    aria-label="Validate Card Number against Luhn checksum"
+                  >
+                    Validate Card
+                  </button>
+                </div>
+
+                {/* Quick Presets for Instant 1-Click Verification */}
+                <div className="card-presets-bar" aria-label="Quick test card presets">
+                  <span className="preset-title">Quick Test Presets:</span>
+                  <div className="preset-buttons">
+                    <button
+                      type="button"
+                      className="preset-pill preset-visa"
+                      onClick={() => handlePresetSelect("4532 8910 2345 6784")}
+                      aria-label="Load verified Visa test card"
+                    >
+                      ✓ Valid Visa
+                    </button>
+                    <button
+                      type="button"
+                      className="preset-pill preset-mc"
+                      onClick={() => handlePresetSelect("5425 2334 3010 9903")}
+                      aria-label="Load verified Mastercard test card"
+                    >
+                      ✓ Valid Mastercard
+                    </button>
+                    <button
+                      type="button"
+                      className="preset-pill preset-bad"
+                      onClick={() => handlePresetSelect("4532 8910 2345 6789")}
+                      aria-label="Load invalid checksum card"
+                    >
+                      ✗ Invalid Checksum
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -428,6 +534,8 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
                     <p>
                       {testResult.isValid
                         ? `Detected as genuine ${testResult.network} format (${testResult.digits} digits). Passes ISO/IEC 7812 verification.`
+                        : testResult.incomplete
+                        ? `Card number contains ${testResult.digits} digits. Enter at least 13-16 digits for full verification.`
                         : `Mathematical checksum check failed. This card sequence does not match legitimate bank issuance patterns.`}
                     </p>
                   </div>

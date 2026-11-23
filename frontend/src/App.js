@@ -696,8 +696,8 @@ function Analytics({ stats, pieData, riskDist, transactions, user, onLogout, onG
                     <ResponsiveContainer width="100%" height={260}>
                         <AreaChart data={volumeData}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                            <XAxis dataKey="date" stroke="#64748b" fontSize={11} />
-                            <YAxis stroke="#64748b" fontSize={11} />
+                            <XAxis dataKey="date" stroke="#94A3B8" fontSize={11} />
+                            <YAxis stroke="#94A3B8" fontSize={11} />
                             <Tooltip />
                             <Area type="monotone" dataKey="amount" stroke={COLORS.safe} fill="url(#colorAmt)" />
                             <defs>
