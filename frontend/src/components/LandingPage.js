@@ -463,7 +463,7 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
         <section className="cta-banner" aria-labelledby="cta-heading">
           <div className="cta-banner-content">
             <h2 id="cta-heading">Ready to test live fraud predictions?</h2>
-            <p>Open the analyst operations console to simulate transactions, view volume graphs, and examine model performance.</p>
+            <p>Launch the live console to simulate transactions, view volume graphs, and examine model performance.</p>
             <button className="glow-btn" onClick={onOpenConsole} aria-label="Launch Live Console">
               Launch Live Console ➔
             </button>

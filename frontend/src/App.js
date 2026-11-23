@@ -101,7 +101,7 @@ function Login({ onLogin, onBackToHome }) {
                 <h2>{mode === "login" ? "Analyst sign in" : "Create account"}</h2>
                 <p className="login-sub">
                     {mode === "login"
-                        ? "Access the fraud operations console with your workspace credentials."
+                        ? "Access the live console with your workspace credentials."
                         : "Register a new analyst account to get started."}
                 </p>
 
@@ -127,8 +127,8 @@ function Login({ onLogin, onBackToHome }) {
                         <input id="auth-password" type="password" placeholder="••••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
                     </div>
                     {error && <div className="alert error" role="alert">{error}</div>}
-                    <button type="submit" className="login-btn" disabled={loading} aria-label={mode === "login" ? "Enter secure console" : "Create new analyst account"}>
-                        {loading ? "Authenticating..." : mode === "login" ? "Enter secure console" : "Create account"}
+                    <button type="submit" className="login-btn" disabled={loading} aria-label={mode === "login" ? "Launch Live Console" : "Create account"}>
+                        {loading ? "Authenticating..." : mode === "login" ? "Launch Live Console" : "Create account"}
                     </button>
                 </form>
 
