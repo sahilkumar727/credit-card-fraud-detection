@@ -194,7 +194,7 @@ function Sidebar({ page, setPage, onGoHome }) {
     );
 }
 
-function TopBar({ title, subtitle, user, onLogout, onGoHome }) {
+function TopBar({ title, subtitle, user, onLogout, onGoHome, theme, onToggleTheme }) {
     const initials = user?.name ? user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() : "SK";
     return (
         <div className="topbar">
@@ -203,6 +203,14 @@ function TopBar({ title, subtitle, user, onLogout, onGoHome }) {
                 <p>{subtitle}</p>
             </div>
             <div className="topbar-right">
+                <button
+                    className="pill-ghost-btn nav-theme-toggle-btn"
+                    onClick={onToggleTheme}
+                    title={`Switch to ${theme === "light" ? "Dark" : "Light"} Mode`}
+                    aria-label="Toggle theme"
+                >
+                    {theme === "light" ? "🌙 Dark" : "☀️ Light"}
+                </button>
                 <button className="pill-ghost-btn" onClick={onGoHome} title="View Landing Page">
                     🌐 View Site
                 </button>
@@ -734,6 +742,26 @@ function Analytics({ stats, pieData, riskDist, transactions, user, onLogout, onG
 }
 
 export default function App() {
+    // Theme state (dark / light)
+    const [theme, setTheme] = useState(() => {
+        try {
+            return localStorage.getItem("securepay-theme") || "dark";
+        } catch {
+            return "dark";
+        }
+    });
+
+    useEffect(() => {
+        document.body.className = theme === "light" ? "theme-light" : "theme-dark";
+        try {
+            localStorage.setItem("securepay-theme", theme);
+        } catch {}
+    }, [theme]);
+
+    const toggleTheme = () => {
+        setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+    };
+
     // Persistent user session via localStorage
     const [currentUser, setCurrentUser] = useState(() => {
         try {
@@ -845,6 +873,8 @@ export default function App() {
                 onOpenConsole={handleOpenConsole}
                 currentUser={currentUser}
                 onOpenLogin={() => setView("login")}
+                theme={theme}
+                onToggleTheme={toggleTheme}
             />
         );
     }

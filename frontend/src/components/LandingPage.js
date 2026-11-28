@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { validateLuhn, getCardNetwork } from "../utils/luhn";
 
-export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
+export function LandingPage({ onOpenConsole, currentUser, onOpenLogin, theme = "dark", onToggleTheme }) {
+  // Mobile nav drawer state
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   // 3D Card tilt state
   const [cardRotate, setCardRotate] = useState({ x: 0, y: 0 });
   const [glarePos, setGlarePos] = useState({ x: 50, y: 50, opacity: 0 });
@@ -153,12 +156,28 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
           </nav>
 
           <div className="nav-actions">
+            {/* Theme Toggle Button */}
+            {onToggleTheme && (
+              <button
+                type="button"
+                className="nav-theme-toggle"
+                onClick={onToggleTheme}
+                aria-label={`Switch to ${theme === "light" ? "Dark" : "Light"} theme`}
+                title={`Switch to ${theme === "light" ? "Dark" : "Light"} theme`}
+              >
+                <span className="theme-toggle-icon">{theme === "light" ? "🌙" : "☀️"}</span>
+                <span className="theme-toggle-label">{theme === "light" ? "Dark" : "Light"}</span>
+              </button>
+            )}
+
             <span className="status-pill" role="status" aria-label="Machine Learning engine status: Online">
-              <span className="pulse-dot" aria-hidden="true"></span> ML Engine Online
+              <span className="pulse-dot" aria-hidden="true"></span>
+              <span className="status-pill-text">ML Online</span>
             </span>
+
             {currentUser ? (
               <button className="primary-cta" onClick={onOpenConsole} aria-label="Launch Live Console">
-                Launch Live Console ➔
+                Live Console ➔
               </button>
             ) : (
               <div className="auth-btn-group">
@@ -166,12 +185,68 @@ export function LandingPage({ onOpenConsole, currentUser, onOpenLogin }) {
                   Analyst Sign In
                 </button>
                 <button className="primary-cta" onClick={onOpenConsole} aria-label="Launch Live Console">
-                  Launch Live Console ➔
+                  Live Console ➔
                 </button>
               </div>
             )}
+
+            {/* Mobile Hamburger Menu Toggle Button */}
+            <button
+              type="button"
+              className="mobile-menu-btn"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle navigation menu"
+              aria-expanded={mobileMenuOpen}
+            >
+              {mobileMenuOpen ? "✕" : "☰"}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Dropdown Navigation Drawer */}
+        {mobileMenuOpen && (
+          <div className="mobile-nav-drawer" aria-label="Mobile Navigation Drawer">
+            <a href="#features" onClick={() => setMobileMenuOpen(false)}>Banking Engine</a>
+            <a href="#threat-stream" onClick={() => setMobileMenuOpen(false)}>Live Radar</a>
+            <a href="#card-security" onClick={() => setMobileMenuOpen(false)}>Luhn Defense</a>
+            <a href="#compliance" onClick={() => setMobileMenuOpen(false)}>Compliance</a>
+            
+            <div className="mobile-drawer-footer">
+              {onToggleTheme && (
+                <button
+                  type="button"
+                  className="mobile-theme-btn"
+                  onClick={() => {
+                    onToggleTheme();
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  {theme === "light" ? "🌙 Switch to Dark Mode" : "☀️ Switch to Light (Dusty) Mode"}
+                </button>
+              )}
+              {!currentUser && (
+                <button
+                  className="ghost-btn mobile-drawer-btn"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenLogin();
+                  }}
+                >
+                  Analyst Sign In
+                </button>
+              )}
+              <button
+                className="primary-cta mobile-drawer-btn"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenConsole();
+                }}
+              >
+                Launch Live Console ➔
+              </button>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Main Content Landmark for Screen Readers */}
